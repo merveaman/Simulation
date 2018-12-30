@@ -24,69 +24,66 @@ int m=2;
 int m1; // servers 1
 int m2; //server 2
 double time = 0.0; // Simulation time
-double t1 = 0.0; // Time for next event #1 (arrival)
-double t2 = SIM_TIME; // Time for next event #2 (departure)
+double arrival_time = 0.0; // Time for next event #1 (arrival)
+double departure_time = SIM_TIME; // Time for next event #2 (departure)
 long int n = 0; // Number of customers in the system
 long int k=1000; //buffer space or queue size
 float p;
 double c = 0.0; // Number of service completions
-double s = 0.0; // Area of number of customers in system
-double b = 0.0; // Total busy time
-double tn = time; // Variable for "last event time"
-double tb; // Variable for "last start of busy time"
-double x; // Throughput
+double customers_in_system = 0.0;
+double total_busy_time = 0.0; 
+double last_event_time = time; 
+double current_busy_time_start_time; 
+double throughput;  
 double l; // Mean number in the system
 double w; // Mean residence time // average time spent in system
 double u; // Utilization
 
 while (time < end_time)
 { 
-if (t1 < t2) 
+if (arrival_time < departure_time) 
 {
-time = t1;
-s = s + n * (time - tn); 
+time = arrival_time;
+customers_in_system = customers_in_system + n * (time - last_event_time); 
 if(n<k) 
 n++;
-tn = time; 
-t1 = time + poissonDist();
+last_event_time = time; 
+arrival_time = time + poissonDist();
 if (n == 1)
 {
-tb = time;
-t2 = time + expntl(Ts);
+current_busy_time_start_time = time;
+departure_time = time + expntl(Ts);
 }
 
 }
 else 
 {
-time = t2;
-s = s + n * (time - tn); 
-
+time = departure_time;
+customers_in_system = customers_in_system + n * (time - last_event_time); 
 
 if(n>m)
 n-=m; 
 else n=0;
 
-tn = time;
+last_event_time = time;
 c++; 
 
 
 if (n > 0)
-t2 = time + expntl(Ts);
+departure_time = time + expntl(Ts);
 else
 
-t2 = end_time;
-b = b + time - tb; 
+departure_time = end_time;
+total_busy_time = total_busy_time + time - current_busy_time_start_time; 
 }
 
 }
 
-
-b = b + time - tb;
-
-x = c / time; 
-l = s / time; 
-w = l / x; 
-u = b/(time*m); 
+total_busy_time = total_busy_time + time - current_busy_time_start_time;
+throughput = c / time; 
+l = customers_in_system / time; 
+w = l / throughput; 
+u = total_busy_time/(time*m); 
 
 cout<<"\n"<<endl;
 cout<<"Results from M/M/c simulation\n"<<endl;
@@ -99,7 +96,7 @@ cout<<"Mean service time = "<<Ts<<"  seconds "<<endl;
 cout<<"\n"<<endl;
 cout<<"OUTPUTS: \n"<<endl;
 cout<<"Number of completions = "<<c<<"  cust "<<endl;
-cout<<"Throughput rate = "<<x<<"  cust/sec "<<endl;
+cout<<"Throughput rate = "<<throughput<<"  cust/sec "<<endl;
 cout<<"Server utilization = "<< u<<endl;
 cout<<"Mean  number of customer in system = "<< l<<"  cust "<<endl;
 cout<<"Mean residence time = " << w<<"  sec "<<endl;
