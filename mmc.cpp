@@ -1,31 +1,23 @@
-/*********************************************************
-A simple M/M/m/k queue simulation
-
-
-*********************************************************/
-
 #include<iostream>
-#include <stdlib.h> // Needed for rand() and RAND_MAX
-#include <cmath> // Needed for log()
+#include <stdlib.h>
+#include <random>
+#include <cmath> 
 using namespace std;
+#define SIM_TIME 1.0e6 
+#define ARR_TIME 1.25 
+#define SERV_TIME 1.00 
+#define IDLE 0         
+#define BUSY 1
 
-//----- Constants -------------------------------------------------------------
-#define SIM_TIME 1.0e6 // Simulation time
-#define ARR_TIME 1.25 // Mean time between arrivals
-#define SERV_TIME 1.00 // Mean service time
-#define IDLE 0         // server status
-#define BUSY 1         // server status
-
-//----- Function prototypes ---------------------------------------------------
-double expntl(double x); // Generate exponential RV with mean x
+double expntl(double x);
+int poissonDist(void);
 
 
-/********************** Main program******************************/
 int main(void)
 {
 
 double end_time = SIM_TIME; // Total time to simulate
-double Ta=ARR_TIME ; // Mean time between arrivals
+double Ta=poissonDist(); // Mean time between arrivals
 double Ts = SERV_TIME; // Mean service time
 int server_status=0;
 int m=2;
@@ -46,20 +38,17 @@ double x; // Throughput
 double l; // Mean number in the system
 double w; // Mean residence time // average time spent in system
 double u; // Utilization
-// Main simulation loop
-//for(int i=1;i<=SIM_TIME;i++)
-//{ p=0.02*i; Ta=Ts/(m*p);
 
 while (time < end_time)
 { 
-if (t1 < t2) // *** Event #1 (arrival)
+if (t1 < t2) 
 {
 time = t1;
-s = s + n * (time - tn); // Update area under "s" curve
+s = s + n * (time - tn); 
 if(n<k) 
 n++;
-tn = time; // tn = "last event time" for next event
-t1 = time + expntl(Ta);
+tn = time; 
+t1 = time + expntl(poissonDist());
 if (n == 1)
 {
 tb = time;
@@ -67,18 +56,18 @@ t2 = time + expntl(Ts);
 }
 
 }
-else // *** Event #2 (departure)
+else 
 {
 time = t2;
-s = s + n * (time - tn); // Update area under "s" curve
+s = s + n * (time - tn); 
 
 
 if(n>m)
 n-=m; 
 else n=0;
 
-tn = time; // tn = "last event time" for next event
-c++; // Increment number of completions
+tn = time;
+c++; 
 
 
 if (n > 0)
@@ -86,57 +75,43 @@ t2 = time + expntl(Ts);
 else
 
 t2 = end_time;
-b = b + time - tb; // Update busy time sum if empty
+b = b + time - tb; 
 }
 
 }
-// End of simulation so update busy time sum
+
 
 b = b + time - tb;
 
-x = c / time; // Compute throughput rate
-l = s / time; // Compute mean number in system
-w = l / x; // Compute mean residence or system time
-u = b/(time*m); // Compute server utilization
+x = c / time; 
+l = s / time; 
+w = l / x; 
+u = b/(time*m); 
 
-//if(l>0)
-//cout<<p<<"\t"<<l<<endl;
-//}
-//cout<<"Throuput="<<x<<endl;
-//cout<<"Average number of customers in system="<<l<<endl;
-//cout<<"Time spent in queue="<<x<<endl;
+cout<<"\n"<<endl;
+cout<<"Results from M/M/c simulation\n"<<endl;
+cout<<"\n"<<endl;
+cout<<"Total simulated time =  "<< end_time<<"seconds "<<endl;
+cout<<"\n"<<endl;
+cout<<"INPUTS: \n";
+cout<<"Mean time between arrivals = "<< Ta<<"  seconds "<<endl;
+cout<<"Mean service time = "<<Ts<<"  seconds "<<endl;
+cout<<"\n"<<endl;
+cout<<"OUTPUTS: \n"<<endl;
+cout<<"Number of completions = "<<c<<"  cust "<<endl;
+cout<<"Throughput rate = "<<x<<"  cust/sec "<<endl;
+cout<<"Server utilization = "<< u<<endl;
+cout<<"Mean  number of customer in system = "<< l<<"  cust "<<endl;
+cout<<"Mean residence time = " << w<<"  sec "<<endl;
 
-// Output results
-cout<<"========================================== ===================== \n"<<endl;
-cout<<"= *** Results from M/M/c/k simulation *** = \n"<<endl;
-cout<<"========================================== ===================== \n"<<endl;
-cout<<"= Total simulated time =  "<< end_time<<"sec "<<endl;
-cout<<"========================================== ===================== \n"<<endl;
-cout<<"= INPUTS: \n";
-cout<<"= Mean time between arrivals = "<< Ta<<"  sec "<<endl;
-cout<<"= Mean service time = "<<Ts<<"  sec "<<endl;
-cout<<"========================================== ===================== \n"<<endl;
-cout<<"= OUTPUTS: \n"<<endl;
-cout<<"= Number of completions = "<<c<<"  cust "<<endl;
-cout<<"= Throughput rate = "<<x<<"  cust/sec "<<endl;
-cout<<"= Server utilization = "<< u<<endl;
-cout<<"= Mean  number of customer in system = "<< l<<"  cust "<<endl;
-cout<<"= Mean residence time = " << w<<"  sec "<<endl;
-
-cout<<"========================================== ===================== \n";
+cout<<"\n";
 
 return 0;
 }
 
-/************************************************************************
-Function to generate exponentially distributed RVs
-Input: x (mean value of distribution)
-Output: Returns with exponential RV
-*************************************************************************/
 double expntl(double x)
 {
-double z; // Uniform random number from 0 to 1
-// Pull a uniform RV (0 < z < 1)
+double z; 
 do
 {
 z = ((double) rand() / RAND_MAX);
@@ -147,10 +122,9 @@ return(-x * log(z));
 }
 
 double unif() {
-	double z; // Uniform random number from 0 to 1
-// Pull a uniform RV (0 < z < 1)
-z = ((double) rand() / RAND_MAX);
-return z;
+	double z;
+	z = ((double) rand() / RAND_MAX);
+	return z;
 }
 double lognormal(double x)
 {
@@ -158,15 +132,19 @@ double lognormal(double x)
 	double z,X,Y;
 	double r1 = unif();
 	double r2 = unif();
-	//	z=-(2*log*r1)*cos(2*3.14*r2);
-		return z;
+	return z;
 }
-double weibull(double a) // assume b=1 and g=0
+double weibull(double a) 
 {   double x;
 	double r1 = unif();
 	x=(-a*log(1-r1));
 	return x;	
-	
 }
 
+int poissonDist(void){
 
+default_random_engine generator;
+poisson_distribution<int> distribution(4.1);
+int number = distribution(generator);
+return number;
+}
