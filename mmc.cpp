@@ -48,7 +48,7 @@ s = s + n * (time - tn);
 if(n<k) 
 n++;
 tn = time; 
-t1 = time + expntl(poissonDist());
+t1 = time + poissonDist();
 if (n == 1)
 {
 tb = time;
