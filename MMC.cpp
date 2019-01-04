@@ -32,9 +32,9 @@ int m;
 
 double delay; // waiting time in queue
 double time; // Simulation time
-double t1 ; // Time for next event #1 (arrival)
-double t2 ; // Time for next event #2 (departure)
-double t3; // Time for next event #3 (departure)
+double arrival_time ; // Time for next event #1 (arrival)
+double departure_time ; // Time for next event #2 (departure)
+double departure_time2; // Time for next event #3 (departure)
 long int n; // Number of customers in the system in the queue
 double c ; // Number of service completions
 double s ; //  number of customers in system
@@ -69,9 +69,9 @@ server_status1=0;
 server_status2=0;
 m=2;
  time = 0.0; // Simulation time
- t1 = 0.0; // Time for next event #1 (arrival)
- t2 = SIM_TIME; // Time for next event #2 (departure1)
- t3= SIM_TIME;  //  Time for next event #3 (departure2)
+ arrival_time = 0.0; // Time for next event #1 (arrival)
+ departure_time = SIM_TIME; // Time for next event #2 (departure1)
+ departure_time2= SIM_TIME;  //  Time for next event #3 (departure2)
  n = 0; // Number of customers in the system
 
  c = 0.0; // Number of service completions
@@ -85,15 +85,15 @@ m=2;
 void MMC::simulate(){
 	while (time < end_time)
 { 
-if (t1 < t2)	{  // arrival process
-time = t1;
+if (arrival_time < departure_time)	{  // arrival process
+time = arrival_time;
 s = s + n * (time - tn); // Update area under "s" curve
 if (server_status1==BUSY && server_status2==BUSY){
              n++;
 tn = time; // tn = "last event time" for next event
-t1 = time + expntl(Ta);	
+arrival_time = time + expntl(Ta);	
 tb = time;
-t2 = time + expntl(Ts);
+departure_time = time + expntl(Ts);
 
 
 }
@@ -103,9 +103,9 @@ t2 = time + expntl(Ts);
     	server_status2= BUSY;
          
         tn = time; // tn = "last event time" for next event
-t1 = time + expntl(Ta);	
+arrival_time = time + expntl(Ta);	
 tb = time;
-t2 = time + expntl(Ts);
+departure_time = time + expntl(Ts);
 
 	}
 	else if (server_status1 == IDLE &&  server_status2==BUSY)
@@ -114,9 +114,9 @@ t2 = time + expntl(Ts);
          
           
 tn = time; // tn = "last event time" for next event
-t1 = time + expntl(Ta);	
+arrival_time = time + expntl(Ta);	
 tb = time;
-t3 = time + expntl(Ts);
+departure_time2 = time + expntl(Ts);
 
 	}
  
@@ -127,10 +127,10 @@ t3 = time + expntl(Ts);
          
          
 tn = time; // tn = "last event time" for next event
-t1 = time + expntl(Ta);	
+arrival_time = time + expntl(Ta);	
 tb = time;
-t2 = time + expntl(Ts);
-t3=  time + expntl(Ts);
+departure_time = time + expntl(Ts);
+departure_time2=  time + expntl(Ts);
 
          
     }
@@ -140,13 +140,13 @@ t3=  time + expntl(Ts);
 
 else{ // departure process from server 1 and server 2
 	
-time = t2;
+time = departure_time;
 s = s + n * (time - tn); 
 if (n==0)
 {          server_status1= IDLE;
            server_status2= IDLE;
-           t2 = end_time;
-           t3 = end_time;
+           departure_time = end_time;
+           departure_time2 = end_time;
            b=b+time-tb;
 	
 }
@@ -155,11 +155,11 @@ else{
 	--n;  
 	tn = time; // tn = "last event time" for next event
     c++;    
-	t2 = time + expntl(Ts);
+	departure_time = time + expntl(Ts);
 	t3 = time + expntl(Ts);
 	b=b+time-tb;
 	lq++;
-    delay= t1-time;
+    delay= arrival_time-time;
     wq+= delay;
 }
  
