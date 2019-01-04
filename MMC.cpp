@@ -37,15 +37,15 @@ double departure_time ; // Time for next event #2 (departure)
 double departure_time2; // Time for next event #3 (departure)
 long int n; // Number of customers in the system in the queue
 double c ; // Number of service completions
-double s ; //  number of customers in system
-double b ; // Total busy time
-double tn ; // Variable for "last event time"
+double customers_in_system ; //  number of customers in system
+double total_busy_time ; // Total busy time
+double last_event_time ; // Variable for "last event time"
 double tb; // Variable for "last start of busy time"
 double x; // Throughput
 double l; // Mean number in the system
 float lq; // Average number in queue
 double w; // Average time spent in system
-float wq; // Average waiting time in queue
+float wq; // Average waiting time in the queue
 double u; // Utilization
 float po; // probability of zero customers in system
 
@@ -65,19 +65,19 @@ void MMC::initialize()
  end_time = SIM_TIME; // Total time to simulate
  Ta=ARR_TIME ; // Mean time between arrivals
  Ts = SERV_TIME; // Mean service time
-server_status1=0;
-server_status2=0;
-m=2;
+ server_status1=0;
+ server_status2=0;
+ m=2;
  time = 0.0; // Simulation time
  arrival_time = 0.0; // Time for next event #1 (arrival)
  departure_time = SIM_TIME; // Time for next event #2 (departure1)
  departure_time2= SIM_TIME;  //  Time for next event #3 (departure2)
- n = 0; // Number of customers in the system
+ n = 0; // Number of customers in the system in the queue
 
  c = 0.0; // Number of service completions
- s = 0.0; // Area of number of customers in system
- b = 0.0; // Total busy time
- tn = time; // Variable for "last event time"
+ customers_in_system = 0.0; // Number of customers in system
+ total_busy_time = 0.0; // Total busy time
+ last_event_time = time; // Variable for "last event time"
 
 }
 
@@ -87,10 +87,10 @@ void MMC::simulate(){
 { 
 if (arrival_time < departure_time)	{  // arrival process
 time = arrival_time;
-s = s + n * (time - tn); // Update area under "s" curve
+customers_in_system = customers_in_system + n * (time - last_event_time); // Update area under "customers_in_system" curve
 if (server_status1==BUSY && server_status2==BUSY){
              n++;
-tn = time; // tn = "last event time" for next event
+last_event_time = time; // tn = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time = time + expntl(Ts);
@@ -102,10 +102,10 @@ departure_time = time + expntl(Ts);
     {
     	server_status2= BUSY;
          
-        tn = time; // tn = "last event time" for next event
-arrival_time = time + expntl(Ta);	
-tb = time;
-departure_time = time + expntl(Ts);
+        last_event_time = time; // tn = "last event time" for next event
+	arrival_time = time + expntl(Ta);	
+	tb = time;
+	departure_time = time + expntl(Ts);
 
 	}
 	else if (server_status1 == IDLE &&  server_status2==BUSY)
@@ -113,7 +113,7 @@ departure_time = time + expntl(Ts);
     	server_status1= BUSY;
          
           
-tn = time; // tn = "last event time" for next event
+last_event_time = time; // last_event_time = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time2 = time + expntl(Ts);
@@ -126,7 +126,7 @@ departure_time2 = time + expntl(Ts);
         server_status2= BUSY;
          
          
-tn = time; // tn = "last event time" for next event
+last_event_time = time; // last_event_time = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time = time + expntl(Ts);
@@ -141,26 +141,26 @@ departure_time2=  time + expntl(Ts);
 else{ // departure process from server 1 and server 2
 	
 time = departure_time;
-s = s + n * (time - tn); 
+customers_in_system = customers_in_system + n * (time - last_event_time); 
 if (n==0)
 {          server_status1= IDLE;
            server_status2= IDLE;
            departure_time = end_time;
            departure_time2 = end_time;
-           b=b+time-tb;
+           total_busy_time=total_busy_time+time-tb;
 	
 }
 
 else{
 	--n;  
-	tn = time; // tn = "last event time" for next event
-    c++;    
+	last_event_time = time; // tn = "last event time" for next event
+    	c++;    
 	departure_time = time + expntl(Ts);
-	t3 = time + expntl(Ts);
-	b=b+time-tb;
+	departure_tim2 = time + expntl(Ts);
+	total_busy_time=total_busy_time+time-tb;
 	lq++;
-    delay= arrival_time-time;
-    wq+= delay;
+    	delay= arrival_time-time;
+    	wq+= delay;
 }
  
 	
@@ -170,9 +170,9 @@ else{
 }
 // End of simulation so update busy time sum
 
-b = b + time - tb;
+total_busy_time = total_busy_time + time - tb;
 x = c / time; // Compute throughput rate
-l = s / time; // Compute mean number in system
+l = customers_in_system / time; // Compute mean number in system
 w = l / x; // Compute mean residence or system time
 u = Ta/(Ts*m); // Compute server utilization
 lq=lq/time;    //compute mean queue length
@@ -229,24 +229,24 @@ return(-x * log(z));
 double MMC::lognormal(double x)
 {
 	std::default_random_engine generator;
-    std::lognormal_distribution<double> distribution(0.1,x);
-    double number = distribution(generator);
-    return number;
+    	std::lognormal_distribution<double> distribution(0.1,x);
+    	double number = distribution(generator);
+    	return number;
 }
 
 double MMC::weibull(double x){
 	std::default_random_engine generator;
-    std::weibull_distribution<double> distribution(2.0,x);
-    double number = distribution(generator);
-    return number;
+    	std::weibull_distribution<double> distribution(2.0,x);
+    	double number = distribution(generator);
+    	return number;
 	
 }
 int MMC::poissonDist(){
 	
 	std::default_random_engine generator;
-    std::poisson_distribution<int> distribution(3.5);
-    int number = distribution(generator);
-    return number;
+    	std::poisson_distribution<int> distribution(3.5);
+    	int number = distribution(generator);
+    	return number;
 	
 }
 
