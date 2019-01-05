@@ -100,14 +100,7 @@ if(T_br>arrival_time){
 
 if (server_status1==BUSY && server_status2==BUSY){
              n++;
-  if (n > queue_size) 
-        {
-            cout<<"\nOverflow of the array time_arrival at";
-             
-            cout<<"time: "<<time;
-             
-           break;
-        }
+ 
 last_event_time = time; // tn = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
