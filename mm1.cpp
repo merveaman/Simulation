@@ -60,7 +60,7 @@ void MM1::simulate()
 		if (arrival_time < departure_time) // *** Event #1 (arrival) ***
 		{
 			time = arrival_time;
-			customers_in_system = customers_in_system + n * (time - tn); // Update area under "s" curve
+			customers_in_system = customers_in_system + n * (time - tn); // Update area under "customers_in_system" curve
 			n++;
 			last_event_time = time; // last_event_time = "last event time" for next event
 			arrival_time = time + exponential(Ta);
@@ -73,7 +73,7 @@ void MM1::simulate()
 		else // *** Event #2 (departure) ***
 		{
 			time = departure_time;
-			customers_in_system = customers_in_system + n * (time - tn); // Update area under "s" curve
+			customers_in_system = customers_in_system + n * (time - tn); // Update area under "customers_in_system" curve
 			n--;
 			last_event_time = time; // tn = "last event time" for next event
 			c++; // Increment number of completions
