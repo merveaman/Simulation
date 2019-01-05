@@ -156,7 +156,7 @@ else{
 	last_event_time = time; // tn = "last event time" for next event
     	c++;    
 	departure_time = time + expntl(Ts);
-	departure_tim2 = time + expntl(Ts);
+	departure_time2 = time + expntl(Ts);
 	total_busy_time=total_busy_time+time-tb;
 	lq++;
     	delay= arrival_time-time;
