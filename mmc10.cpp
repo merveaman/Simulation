@@ -113,7 +113,7 @@ departure_time = time + expntl(Ts);
     {
     	server_status2= BUSY;
          
-        tn = time; // last_event_time = "last event time" for next event
+        last_event_time = time; // last_event_time = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time = time + expntl(Ts);
