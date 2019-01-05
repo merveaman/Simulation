@@ -75,7 +75,7 @@ void MM1::simulate()
 			time = departure_time;
 			customers_in_system = customers_in_system + n * (time - tn); // Update area under "customers_in_system" curve
 			n--;
-			last_event_time = time; // tn = "last event time" for next event
+			last_event_time = time; // last_event_time = "last event time" for next event
 			c++; // Increment number of completions
 			if (n > 0)
 			departure_time = time + exponential(Ts);
