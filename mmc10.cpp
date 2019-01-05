@@ -113,7 +113,7 @@ departure_time = time + expntl(Ts);
     {
     	server_status2= BUSY;
          
-        tn = time; // tn = "last event time" for next event
+        tn = time; // last_event_time = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time = time + expntl(Ts);
@@ -124,7 +124,7 @@ departure_time = time + expntl(Ts);
     	server_status1= BUSY;
          
           
-last_event_time = time; // tn = "last event time" for next event
+last_event_time = time; // last_event_time= "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time2 = time + expntl(Ts);
@@ -137,7 +137,7 @@ departure_time2 = time + expntl(Ts);
         server_status2= BUSY;
          
          
-last_event_time = time; // tn = "last event time" for next event
+last_event_time = time; // last_event_time = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time = time + expntl(Ts);
@@ -164,7 +164,7 @@ if (n==0)
 
 else{
 	--n;  
-	last_event_time = time; // tn = "last event time" for next event
+	last_event_time = time; // last_event_time = "last event time" for next event
     c++;    
 	departure_time = time + expntl(Ts);
 	departure_time2 = time + expntl(Ts);
