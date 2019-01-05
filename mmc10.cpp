@@ -87,7 +87,7 @@ void MMC::simulate(){
 { 
 if (arrival_time < departure_time)	{  // arrival process
 time = arrival_time;
-customers_in_system = customers_in_system + n * (time - last_event_time); // Update area under "s" curve
+customers_in_system = customers_in_system + n * (time - last_event_time); // Update area under "customers_in_system" curve
 if (server_status1==BUSY && server_status2==BUSY){
              n++;
              
