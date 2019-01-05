@@ -101,7 +101,7 @@ if (n > queue_size)
         }
 
 
-last_event_time = time; // tn = "last event time" for next event
+last_event_time = time; // last_event_time = "last event time" for next event
 arrival_time = time + expntl(Ta);	
 tb = time;
 departure_time = time + expntl(Ts);
@@ -185,7 +185,7 @@ total_busy_time = total_busy_time + time - tb;
 x = c / time; // Compute throughput rate
 l = customers_in_system / time; // Compute mean number in system
 w = l / x; // Compute mean residence or system time
-u = b/(time*m); // Compute server utilization
+u = total_busy_time/(time*m); // Compute server utilization
 lq=lq/time;     //compute mean queue length
 wq=wq/c;       //compute waiting time in queue
 
