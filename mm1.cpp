@@ -45,7 +45,7 @@ void MM1::initialize()
      	Ts = SERV_TIME; // Mean service time
 	n = 0; // Number of customers in the system
      	c = 0; // Number of service completions 
- 	b = 0.0; // Total busy time
+ 	total_busy_time = 0.0; // Total busy time
      	customers_in_system = 0.0; // Number of customers in the system
      	time = 0.0; // Simulation time
      	arrival_time = 0.0; // Time for next event #1 (arrival)
@@ -60,7 +60,7 @@ void MM1::simulate()
 		if (arrival_time < departure_time) // *** Event #1 (arrival) ***
 		{
 			time = arrival_time;
-			customers_in_system = customers_in_system + n * (time - tn); // Update area under "customers_in_system" curve
+			customers_in_system = customers_in_system + n * (time - last_event_time); // Update area under "customers_in_system" curve
 			n++;
 			last_event_time = time; // last_event_time = "last event time" for next event
 			arrival_time = time + exponential(Ta);
@@ -73,7 +73,7 @@ void MM1::simulate()
 		else // *** Event #2 (departure) ***
 		{
 			time = departure_time;
-			customers_in_system = customers_in_system + n * (time - tn); // Update area under "customers_in_system" curve
+			customers_in_system = customers_in_system + n * (time - last_event_time); // Update area under "customers_in_system" curve
 			n--;
 			last_event_time = time; // last_event_time = "last event time" for next event
 			c++; // Increment number of completions
