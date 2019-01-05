@@ -92,7 +92,7 @@ time = arrival_time;
 customers_in_system = customers_in_system + n * (time - last_event_time); // Update area under "customers_in_system" curve
 
 T_br=weibull(1);
-if(T_br>t1){
+if(T_br>arrival_time){
 	Delay+=T_br;
 	T_rp=lognormal(1);
 	Delay+=T_rp; 
